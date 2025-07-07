@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "EkaUiKit"
 include(":app")
+include(":ui")
