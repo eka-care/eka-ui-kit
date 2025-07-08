@@ -166,7 +166,7 @@ internal fun EkaButtonImpl(
             isLeadingIconNull = leadingIcon == null,
             isTrailingIconNull = trailingIcon == null
         ),
-        border = if (buttonStyle == EkaButtonStyle.OUTLINED) BorderStroke(
+        border = if (buttonStyle == EkaButtonStyle.OUTLINED && enabled == false) BorderStroke(
             width = buttonSize.borderWidth(), color = EkaTheme.colors.outlineVariant
         ) else null,
         elevation = if (buttonStyle == EkaButtonStyle.ELEVATED) ButtonDefaults.elevatedButtonElevation(
@@ -208,7 +208,7 @@ internal fun GetEkaIcon(icon: EkaIcon, buttonSize: EkaButtonSize) {
             painter = it,
             contentDescription = icon.contentDescription,
             modifier = Modifier
-                .size(buttonSize.iconSize())
+                .size(buttonSize.iconSize()),
         )
     }
     icon.imageVector?.let {
@@ -244,35 +244,43 @@ internal fun getEkaButtonColors(buttonStyle: EkaButtonStyle): ButtonColors {
         EkaButtonStyle.FILLED -> {
             ButtonDefaults.buttonColors(
                 containerColor = EkaTheme.colors.primary,
-                contentColor = EkaTheme.colors.onPrimary
+                contentColor = EkaTheme.colors.onPrimary,
+                disabledContainerColor = EkaTheme.colors.surfaceContainer,
+                disabledContentColor = EkaTheme.colors.onSurfaceVariant
             )
         }
 
         EkaButtonStyle.OUTLINED -> {
             ButtonDefaults.outlinedButtonColors(
-                containerColor = Color.White,
-                contentColor = EkaTheme.colors.onSurfaceVariant,
+                containerColor = EkaTheme.colors.inverseSurface,
+                contentColor = EkaTheme.colors.inverseOnSurface,
+                disabledContainerColor = EkaTheme.colors.outlineVariant,
+                disabledContentColor = EkaTheme.colors.onSurfaceVariant
             )
         }
 
         EkaButtonStyle.TEXT -> {
             ButtonDefaults.buttonColors(
                 containerColor = Color.Transparent,
-                contentColor = EkaTheme.colors.primary
+                contentColor = EkaTheme.colors.primary,
             )
         }
 
         EkaButtonStyle.TONAL -> {
             ButtonDefaults.buttonColors(
-                containerColor = EkaTheme.colors.secondaryContainer,
-                contentColor = EkaTheme.colors.onSecondaryContainer
+                containerColor = EkaTheme.colors.secondary,
+                contentColor = EkaTheme.colors.onSecondary,
+                disabledContainerColor = EkaTheme.colors.secondaryContainer,
+                disabledContentColor = EkaTheme.colors.onSecondaryContainer
             )
         }
 
         EkaButtonStyle.ELEVATED -> {
             ButtonDefaults.elevatedButtonColors(
-                containerColor = EkaTheme.colors.surfaceContainerLow,
-                contentColor = EkaTheme.colors.primary
+                containerColor = EkaTheme.colors.primary,
+                contentColor = EkaTheme.colors.onPrimary,
+                disabledContainerColor = EkaTheme.colors.surfaceContainerLow,
+                disabledContentColor = EkaTheme.colors.primary
             )
         }
     }
