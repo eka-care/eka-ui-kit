@@ -1,28 +1,41 @@
-package com.eka.ui.previews
-
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Divider
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.eka.ui.buttons.EkaButton
@@ -32,423 +45,465 @@ import com.eka.ui.buttons.EkaButtonStyle
 import com.eka.ui.buttons.EkaIcon
 import com.eka.ui.theme.EkaTheme
 
-// Preview for all button variations
-@Preview(showBackground = true, widthDp = 1200, heightDp = 2400)
+@Preview(showBackground = true, widthDp = 1400, heightDp = 3000)
 @Composable
-fun EkaButtonCompletePreview() {
-    EkaTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = Color(0xFFF5F5F5)
+fun EkaButtonGroupsPreview() {
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = Color(0xFFF8F9FA)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(32.dp)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(24.dp)
-            ) {
-                // Title
-                Text(
-                    text = "EkaButton Component Preview",
-                    style = EkaTheme.typography.headlineLarge,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
+            // Title
+            Text(
+                text = "Button groups",
+                style = EkaTheme.typography.displaySmall,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
 
-                // All button styles
-                EkaButtonStyle.entries.forEach { style ->
-                    ButtonStyleSection(style = style)
-                    if (style != EkaButtonStyle.entries.last()) {
-                        Divider(modifier = Modifier.padding(vertical = 8.dp))
-                    }
-                }
-            }
+            Text(
+                text = "See design guidelines",
+                style = EkaTheme.typography.bodyMedium,
+                color = EkaTheme.colors.primary,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
+            // Simple Button Groups
+            SimpleButtonGroups()
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Icon Button Groups
+            IconButtonGroups()
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Segmented Button Groups
+            SegmentedButtonGroups()
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Toggle Button Groups
+            ToggleButtonGroups()
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Mixed Button Groups
+            MixedButtonGroups()
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Size Variations
+            SizeVariationGroups()
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Pagination Groups
+            PaginationGroups()
         }
     }
 }
 
 @Composable
-private fun ButtonStyleSection(style: EkaButtonStyle) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        // Style title
-        Text(
-            text = "${style.name} Style",
-            style = EkaTheme.typography.titleLarge,
-            color = EkaTheme.colors.primary
-        )
+private fun SimpleButtonGroups() {
+    GroupSection(title = "Simple Button Groups") {
+        // Basic horizontal group
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            EkaButton(label = "First", onClick = {})
+            EkaButton(label = "Second", onClick = {})
+            EkaButton(label = "Third", onClick = {})
+        }
 
-        // All sizes for this style
-        EkaButtonSize.values().forEach { size ->
-            ButtonSizeRow(style = style, size = size)
+        // Outlined group
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            EkaButton(label = "Option 1", style = EkaButtonStyle.OUTLINED, onClick = {})
+            EkaButton(label = "Option 2", style = EkaButtonStyle.OUTLINED, onClick = {})
+            EkaButton(label = "Option 3", style = EkaButtonStyle.OUTLINED, onClick = {})
+        }
+
+        // Text button group
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            EkaButton(label = "Save", style = EkaButtonStyle.TEXT, onClick = {})
+            EkaButton(label = "Cancel", style = EkaButtonStyle.TEXT, onClick = {})
+            EkaButton(label = "Delete", style = EkaButtonStyle.TEXT, onClick = {})
+        }
+
+        // Tonal button group
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            EkaButton(label = "Today", style = EkaButtonStyle.TONAL, onClick = {})
+            EkaButton(label = "Week", style = EkaButtonStyle.TONAL, onClick = {})
+            EkaButton(label = "Month", style = EkaButtonStyle.TONAL, onClick = {})
+            EkaButton(label = "Year", style = EkaButtonStyle.TONAL, onClick = {})
         }
     }
 }
 
 @Composable
-private fun ButtonSizeRow(style: EkaButtonStyle, size: EkaButtonSize) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        // Size label
-        Text(
-            text = "Size: ${size.name} (${size.size})",
-            style = EkaTheme.typography.labelMedium,
-            color = EkaTheme.colors.onSurfaceVariant
-        )
-
-        // Rounded shape buttons
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            // Basic button
+private fun IconButtonGroups() {
+    GroupSection(title = "Icon Button Groups") {
+        // Leading icon group
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             EkaButton(
-                label = "Button",
-                style = style,
-                size = size,
-                shape = EkaButtonShape.ROUNDED,
+                label = "Upload",
+                leadingIcon = EkaIcon(Icons.Default.Done),
                 onClick = {}
             )
-
-            // With leading icon
             EkaButton(
-                label = "Search",
-                style = style,
-                size = size,
-                shape = EkaButtonShape.ROUNDED,
-                leadingIcon = EkaIcon(
-                    icon = Icons.Default.Search,
-                    contentDescription = "Search"
-                ),
+                label = "Download",
+                leadingIcon = EkaIcon(Icons.Default.Done),
                 onClick = {}
             )
+            EkaButton(
+                label = "Share",
+                leadingIcon = EkaIcon(Icons.Default.Share),
+                onClick = {}
+            )
+        }
 
-            // With trailing icon
+        // Icon only buttons (using small size)
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            EkaButton(
+                label = "",
+                size = EkaButtonSize.SMALL,
+                leadingIcon = EkaIcon(Icons.Default.Done),
+                onClick = {}
+            )
+            EkaButton(
+                label = "",
+                size = EkaButtonSize.SMALL,
+                leadingIcon = EkaIcon(Icons.Default.Done),
+                onClick = {}
+            )
+            EkaButton(
+                label = "",
+                size = EkaButtonSize.SMALL,
+                leadingIcon = EkaIcon(Icons.Default.Done),
+                onClick = {}
+            )
+            EkaButton(
+                label = "",
+                size = EkaButtonSize.SMALL,
+                leadingIcon = EkaIcon(Icons.Default.Done),
+                onClick = {}
+            )
+        }
+
+        // Mixed icon and text
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            EkaButton(
+                label = "Previous",
+                leadingIcon = EkaIcon(Icons.Default.ArrowBack),
+                style = EkaButtonStyle.OUTLINED,
+                onClick = {}
+            )
             EkaButton(
                 label = "Next",
-                style = style,
-                size = size,
-                shape = EkaButtonShape.ROUNDED,
-                trailingIcon = EkaIcon(
-                    icon = Icons.Default.ArrowForward,
-                    contentDescription = "Arrow"
-                ),
+                trailingIcon = EkaIcon(Icons.Default.ArrowForward),
+                style = EkaButtonStyle.OUTLINED,
                 onClick = {}
             )
+        }
+    }
+}
 
-            // With both icons
+@Composable
+private fun SegmentedButtonGroups() {
+    GroupSection(title = "Segmented Button Groups") {
+        // View mode selector
+        var selectedView by remember { mutableStateOf(0) }
+        Row(horizontalArrangement = Arrangement.spacedBy(0.dp)) {
             EkaButton(
-                label = "Add",
-                style = style,
-                size = size,
-                shape = EkaButtonShape.ROUNDED,
+                label = "List",
+                style = if (selectedView == 0) EkaButtonStyle.FILLED else EkaButtonStyle.OUTLINED,
+                shape = EkaButtonShape.SQUARE,
+                leadingIcon = EkaIcon(Icons.Default.List),
+                onClick = { selectedView = 0 }
+            )
+            EkaButton(
+                label = "Grid",
+                style = if (selectedView == 1) EkaButtonStyle.FILLED else EkaButtonStyle.OUTLINED,
+                shape = EkaButtonShape.SQUARE,
+                leadingIcon = EkaIcon(Icons.Default.Done),
+                onClick = { selectedView = 1 }
+            )
+            EkaButton(
+                label = "Calendar",
+                style = if (selectedView == 2) EkaButtonStyle.FILLED else EkaButtonStyle.OUTLINED,
+                shape = EkaButtonShape.SQUARE,
+                leadingIcon = EkaIcon(Icons.Default.Done),
+                onClick = { selectedView = 2 }
+            )
+        }
+
+        // Time period selector
+        var selectedPeriod by remember { mutableStateOf(1) }
+        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            listOf("Day", "Week", "Month", "Year").forEachIndexed { index, label ->
+                EkaButton(
+                    label = label,
+                    style = if (selectedPeriod == index) EkaButtonStyle.TONAL else EkaButtonStyle.TEXT,
+                    size = EkaButtonSize.SMALL,
+                    onClick = { selectedPeriod = index }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ToggleButtonGroups() {
+    GroupSection(title = "Toggle Button Groups") {
+        // Multiple selection
+        val selectedOptions = remember { mutableStateListOf(0, 2) }
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            listOf("Bold", "Italic", "Underline", "Strike").forEachIndexed { index, label ->
+                val isSelected = selectedOptions.contains(index)
+                EkaButton(
+                    label = label,
+                    style = if (isSelected) EkaButtonStyle.FILLED else EkaButtonStyle.OUTLINED,
+                    size = EkaButtonSize.SMALL,
+                    onClick = {
+                        if (isSelected) selectedOptions.remove(index)
+                        else selectedOptions.add(index)
+                    }
+                )
+            }
+        }
+
+        // Settings toggles
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            var notifications by remember { mutableStateOf(true) }
+            var darkMode by remember { mutableStateOf(false) }
+
+            EkaButton(
+                label = if (notifications) "Notifications ON" else "Notifications OFF",
+                style = if (notifications) EkaButtonStyle.TONAL else EkaButtonStyle.OUTLINED,
                 leadingIcon = EkaIcon(
-                    icon = Icons.Default.Add,
-                    contentDescription = "Add"
+                    if (notifications) Icons.Default.Notifications
+                    else Icons.Default.Done
                 ),
-                trailingIcon = EkaIcon(
-                    icon = Icons.Default.ArrowForward,
-                    contentDescription = "Arrow"
-                ),
-                onClick = {}
+                onClick = { notifications = !notifications }
             )
 
-            // Disabled state
             EkaButton(
-                label = "Disabled",
-                style = style,
-                size = size,
-                shape = EkaButtonShape.ROUNDED,
-                enabled = false,
+                label = if (darkMode) "Dark Mode" else "Light Mode",
+                style = if (darkMode) EkaButtonStyle.FILLED else EkaButtonStyle.OUTLINED,
+                leadingIcon = EkaIcon(
+                    if (darkMode) Icons.Default.Done
+                    else Icons.Default.Done
+                ),
+                onClick = { darkMode = !darkMode }
+            )
+        }
+    }
+}
+
+@Composable
+private fun MixedButtonGroups() {
+    GroupSection(title = "Mixed Button Groups") {
+        // Primary + Secondary actions
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            EkaButton(
+                label = "Save Changes",
+                style = EkaButtonStyle.FILLED,
+                leadingIcon = EkaIcon(Icons.Default.Check),
+                onClick = {}
+            )
+            EkaButton(
+                label = "Cancel",
+                style = EkaButtonStyle.OUTLINED,
+                onClick = {}
+            )
+            EkaButton(
+                label = "Delete",
+                style = EkaButtonStyle.TEXT,
+                leadingIcon = EkaIcon(Icons.Default.Delete),
                 onClick = {}
             )
         }
 
-        // Square shape buttons
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            // Basic button
+        // Action toolbar
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             EkaButton(
-                label = "Button",
-                style = style,
-                size = size,
-                shape = EkaButtonShape.SQUARE,
+                label = "Create New",
+                style = EkaButtonStyle.FILLED,
+                leadingIcon = EkaIcon(Icons.Default.Add),
                 onClick = {}
             )
-
-            // With leading icon
+            EkaButton(
+                label = "Import",
+                style = EkaButtonStyle.TONAL,
+                leadingIcon = EkaIcon(Icons.Default.Done),
+                onClick = {}
+            )
+            EkaButton(
+                label = "Export",
+                style = EkaButtonStyle.TONAL,
+                leadingIcon = EkaIcon(Icons.Default.Done),
+                onClick = {}
+            )
             EkaButton(
                 label = "Settings",
-                style = style,
-                size = size,
-                shape = EkaButtonShape.SQUARE,
-                leadingIcon = EkaIcon(
-                    icon = Icons.Default.Settings,
-                    contentDescription = "Settings"
-                ),
+                style = EkaButtonStyle.TEXT,
+                leadingIcon = EkaIcon(Icons.Default.Settings),
                 onClick = {}
             )
+        }
+    }
+}
 
-            // With trailing icon
+@Composable
+private fun SizeVariationGroups() {
+    GroupSection(title = "Size Variations") {
+        // Extra Small group
+        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            EkaButton(label = "XS", size = EkaButtonSize.XSMALL, onClick = {})
             EkaButton(
-                label = "Like",
-                style = style,
-                size = size,
-                shape = EkaButtonShape.SQUARE,
-                trailingIcon = EkaIcon(
-                    icon = Icons.Default.Favorite,
-                    contentDescription = "Favorite"
-                ),
+                label = "XS",
+                size = EkaButtonSize.XSMALL,
+                style = EkaButtonStyle.OUTLINED,
+                onClick = {})
+            EkaButton(
+                label = "XS",
+                size = EkaButtonSize.XSMALL,
+                style = EkaButtonStyle.TONAL,
+                onClick = {})
+        }
+
+        // Small group
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            EkaButton(label = "Small", size = EkaButtonSize.SMALL, onClick = {})
+            EkaButton(
+                label = "Small",
+                size = EkaButtonSize.SMALL,
+                style = EkaButtonStyle.OUTLINED,
+                onClick = {})
+            EkaButton(
+                label = "Small",
+                size = EkaButtonSize.SMALL,
+                style = EkaButtonStyle.TONAL,
+                onClick = {})
+        }
+
+        // Medium group (default)
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            EkaButton(label = "Medium", onClick = {})
+            EkaButton(label = "Medium", style = EkaButtonStyle.OUTLINED, onClick = {})
+            EkaButton(label = "Medium", style = EkaButtonStyle.TONAL, onClick = {})
+        }
+
+        // Large group
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            EkaButton(label = "Large", size = EkaButtonSize.LARGE, onClick = {})
+            EkaButton(
+                label = "Large",
+                size = EkaButtonSize.LARGE,
+                style = EkaButtonStyle.OUTLINED,
+                onClick = {})
+        }
+
+        // Extra Large group
+        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            EkaButton(label = "Extra Large", size = EkaButtonSize.XLARGE, onClick = {})
+        }
+    }
+}
+
+@Composable
+private fun PaginationGroups() {
+    GroupSection(title = "Pagination Groups") {
+        // Simple pagination
+        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            EkaButton(
+                label = "",
+                size = EkaButtonSize.SMALL,
+                style = EkaButtonStyle.TEXT,
+                leadingIcon = EkaIcon(Icons.Default.ArrowBack),
                 onClick = {}
             )
-
-            // With both icons
+            (1..5).forEach { page ->
+                EkaButton(
+                    label = "$page",
+                    size = EkaButtonSize.SMALL,
+                    style = if (page == 2) EkaButtonStyle.FILLED else EkaButtonStyle.TEXT,
+                    onClick = {}
+                )
+            }
             EkaButton(
-                label = "Add",
-                style = style,
-                size = size,
-                shape = EkaButtonShape.SQUARE,
-                leadingIcon = EkaIcon(
-                    icon = Icons.Default.Add,
-                    contentDescription = "Add"
-                ),
-                trailingIcon = EkaIcon(
-                    icon = Icons.Default.ArrowForward,
-                    contentDescription = "Arrow"
-                ),
-                onClick = {}
-            )
-
-            // Disabled state
-            EkaButton(
-                label = "Disabled",
-                style = style,
-                size = size,
-                shape = EkaButtonShape.SQUARE,
+                label = "...",
+                size = EkaButtonSize.SMALL,
+                style = EkaButtonStyle.TEXT,
                 enabled = false,
-                leadingIcon = EkaIcon(
-                    icon = Icons.Default.Settings,
-                    contentDescription = "Settings"
-                ),
-                onClick = {}
-            )
-        }
-    }
-}
-
-// Individual previews for each style
-@Preview(showBackground = true, widthDp = 400)
-@Composable
-fun EkaButtonFilledPreview() {
-    EkaTheme {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            EkaButton(
-                label = "Filled Button",
-                style = EkaButtonStyle.FILLED,
                 onClick = {}
             )
             EkaButton(
-                label = "With Icon",
-                style = EkaButtonStyle.FILLED,
-                leadingIcon = EkaIcon(
-                    icon = Icons.Default.Add,
-                    contentDescription = "Add"
-                ),
-                onClick = {}
-            )
-        }
-    }
-}
-
-@Preview(showBackground = true, widthDp = 400)
-@Composable
-fun EkaButtonOutlinedPreview() {
-    EkaTheme {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            EkaButton(
-                label = "Outlined Button",
-                style = EkaButtonStyle.OUTLINED,
-                onClick = {}
-            )
-            EkaButton(
-                label = "With Icon",
-                style = EkaButtonStyle.OUTLINED,
-                leadingIcon = EkaIcon(
-                    icon = Icons.Default.Search,
-                    contentDescription = "Search"
-                ),
-                onClick = {}
-            )
-        }
-    }
-}
-
-@Preview(showBackground = true, widthDp = 400)
-@Composable
-fun EkaButtonTextPreview() {
-    EkaTheme {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            EkaButton(
-                label = "Text Button",
+                label = "10",
+                size = EkaButtonSize.SMALL,
                 style = EkaButtonStyle.TEXT,
                 onClick = {}
             )
             EkaButton(
-                label = "With Icon",
+                label = "",
+                size = EkaButtonSize.SMALL,
                 style = EkaButtonStyle.TEXT,
-                trailingIcon = EkaIcon(
-                    icon = Icons.Default.ArrowForward,
-                    contentDescription = "Arrow"
-                ),
+                leadingIcon = EkaIcon(Icons.Default.ArrowForward),
                 onClick = {}
             )
         }
-    }
-}
 
-@Preview(showBackground = true, widthDp = 400)
-@Composable
-fun EkaButtonTonalPreview() {
-    EkaTheme {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+        // Compact pagination
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             EkaButton(
-                label = "Tonal Button",
-                style = EkaButtonStyle.TONAL,
+                label = "Previous",
+                style = EkaButtonStyle.OUTLINED,
+                size = EkaButtonSize.SMALL,
+                leadingIcon = EkaIcon(Icons.Default.ArrowBack),
                 onClick = {}
             )
-            EkaButton(
-                label = "With Icons",
-                style = EkaButtonStyle.TONAL,
-                leadingIcon = com.eka.ui.buttons.EkaIcon(
-                    icon = Icons.Default.Favorite,
-                    contentDescription = "Favorite"
-                ),
-                trailingIcon = com.eka.ui.buttons.EkaIcon(
-                    icon = Icons.Default.ArrowForward,
-                    contentDescription = "Arrow"
-                ),
-                onClick = {}
-            )
-        }
-    }
-}
-
-@Preview(showBackground = true, widthDp = 400)
-@Composable
-fun EkaButtonElevatedPreview() {
-    EkaTheme {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            EkaButton(
-                label = "Elevated Button",
-                style = EkaButtonStyle.ELEVATED,
-                onClick = {}
-            )
-            EkaButton(
-                label = "With Icon",
-                style = EkaButtonStyle.ELEVATED,
-                leadingIcon = EkaIcon(
-                    icon = Icons.Default.Settings,
-                    contentDescription = "Settings"
-                ),
-                onClick = {}
-            )
-        }
-    }
-}
-
-// Size comparison preview
-@Preview(showBackground = true, widthDp = 600)
-@Composable
-fun EkaButtonSizeComparisonPreview() {
-    EkaTheme {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
             Text(
-                text = "Button Sizes",
-                style = EkaTheme.typography.titleLarge
+                text = "Page 3 of 10",
+                style = EkaTheme.typography.bodyMedium
             )
-
-            EkaButtonSize.entries.forEach { size ->
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = size.name,
-                        style = EkaTheme.typography.labelMedium,
-                        modifier = Modifier.width(80.dp)
-                    )
-                    EkaButton(
-                        label = "Button",
-                        size = size,
-                        onClick = {}
-                    )
-                    EkaButton(
-                        label = "Icon",
-                        size = size,
-                        leadingIcon = EkaIcon(
-                            icon = Icons.Default.Add,
-                            contentDescription = "Add"
-                        ),
-                        onClick = {}
-                    )
-                }
-            }
+            EkaButton(
+                label = "Next",
+                style = EkaButtonStyle.OUTLINED,
+                size = EkaButtonSize.SMALL,
+                trailingIcon = EkaIcon(Icons.Default.ArrowForward),
+                onClick = {}
+            )
         }
     }
 }
 
-// Shape comparison preview
-@Preview(showBackground = true, widthDp = 400)
 @Composable
-fun EkaButtonShapeComparisonPreview() {
-    EkaTheme {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Text(
-                text = "Button Shapes",
-                style = EkaTheme.typography.titleLarge
-            )
-
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                EkaButton(
-                    label = "Rounded",
-                    shape = EkaButtonShape.ROUNDED,
-                    onClick = {}
-                )
-                EkaButton(
-                    label = "Square",
-                    shape = EkaButtonShape.SQUARE,
-                    onClick = {}
-                )
-            }
-        }
+private fun GroupSection(
+    title: String,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(Color.White)
+            .padding(20.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Text(
+            text = title,
+            style = EkaTheme.typography.titleLarge,
+            fontWeight = FontWeight.Medium,
+            color = EkaTheme.colors.onSurface
+        )
+        content()
     }
 }
 
