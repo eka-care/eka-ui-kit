@@ -14,19 +14,24 @@ val LocalEkaColors = staticCompositionLocalOf {
 }
 
 val LocalEkaTypography = staticCompositionLocalOf {
-    Typography()
+    defaultUIKitTypography
+}
+
+val LocalEkaShapes = staticCompositionLocalOf {
+    Shapes
 }
 
 @Composable
 fun EkaTheme(
     colorScheme: ColorScheme = lightScheme,
-    typography: Typography = MaterialTheme.typography,
+    typography: Typography = defaultUIKitTypography,
     shapes: Shapes = Shapes,
     content: @Composable () -> Unit
 ) {
     CompositionLocalProvider(
         LocalEkaColors provides colorScheme,
-        LocalEkaTypography provides typography
+        LocalEkaTypography provides typography,
+        LocalEkaShapes provides shapes
     ) {
         MaterialTheme(
             colorScheme = colorScheme,
@@ -44,5 +49,8 @@ object EkaTheme {
     val colors: ColorScheme
         @Composable @ReadOnlyComposable
         get() = LocalEkaColors.current
+    val shapes: Shapes
+        @Composable @ReadOnlyComposable
+        get() = LocalEkaShapes.current
 }
 
