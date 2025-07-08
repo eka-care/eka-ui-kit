@@ -1,16 +1,25 @@
 package com.eka.ui.buttons
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.eka.ui.common.HorizontalSpacer
 import com.eka.ui.theme.EkaTheme
 
 enum class EkaButtonStyle {
@@ -41,32 +50,63 @@ enum class EkaButtonSize(val size: Dp) {
 
     fun iconSpace(): Int {
         return when (this) {
-            XLARGE, LARGE, MEDIUM -> 8
-            SMALL, XSMALL -> 4
+            XLARGE -> 16
+            LARGE -> 12
+            MEDIUM, SMALL -> 8
+            XSMALL -> 4
+        }
+    }
+
+    fun borderWidth(): Dp {
+        return when (this) {
+            XLARGE, LARGE -> 2.dp
+            MEDIUM, SMALL, XSMALL -> 1.dp
         }
     }
 
     fun paddingValues(isLeadingIconNull: Boolean, isTrailingIconNull: Boolean) = when (this) {
-        XLARGE, LARGE, MEDIUM -> PaddingValues(
-            top = 0.dp,
+        XLARGE -> PaddingValues(
+            top = 48.dp,
+            start = if (isLeadingIconNull) 64.dp else 32.dp,
+            bottom = 48.dp,
+            end = if (isTrailingIconNull) 64.dp else 32.dp
+        )
+
+        LARGE -> PaddingValues(
+            top = 32.dp,
+            start = if (isLeadingIconNull) 48.dp else 32.dp,
+            bottom = 32.dp,
+            end = if (isTrailingIconNull) 48.dp else 32.dp
+        )
+
+        MEDIUM -> PaddingValues(
+            top = 16.dp,
             start = if (isLeadingIconNull) 24.dp else 16.dp,
-            bottom = 0.dp,
+            bottom = 16.dp,
             end = if (isTrailingIconNull) 24.dp else 16.dp
         )
 
         SMALL -> PaddingValues(
-            top = 0.dp,
-            start = if (isLeadingIconNull) 16.dp else 8.dp,
-            bottom = 0.dp,
-            end = if (isTrailingIconNull) 16.dp else 8.dp
+            top = 10.dp,
+            start = if (isLeadingIconNull) 16.dp else 12.dp,
+            bottom = 10.dp,
+            end = if (isTrailingIconNull) 16.dp else 12.dp
         )
 
         XSMALL -> PaddingValues(
-            top = 0.dp,
-            start = if (isLeadingIconNull) 8.dp else 4.dp,
-            bottom = 0.dp,
-            end = if (isTrailingIconNull) 8.dp else 4.dp
+            top = 6.dp,
+            start = if (isLeadingIconNull) 12.dp else 8.dp,
+            bottom = 6.dp,
+            end = if (isTrailingIconNull) 12.dp else 8.dp
         )
+    }
+
+    @Composable
+    fun textStyle() = when (this) {
+        XLARGE -> EkaTheme.typography.headlineLarge
+        LARGE -> EkaTheme.typography.headlineSmall
+        MEDIUM -> EkaTheme.typography.titleMedium
+        XSMALL, SMALL -> EkaTheme.typography.labelLarge
     }
 }
 
@@ -112,12 +152,13 @@ internal fun EkaButtonImpl(
     trailingIcon: EkaIcon?,
     onClick: () -> Unit,
 ) {
-    val buttonColor = getButtonColors(buttonStyle = buttonStyle)
-    val derivedShape = getButtonShape(buttonShape = buttonShape, buttonSize = buttonSize)
+    val buttonColor = getEkaButtonColors(buttonStyle = buttonStyle)
+    val derivedShape = getEkaButtonShape(buttonShape = buttonShape, buttonSize = buttonSize)
 
     Button(
         onClick = onClick,
-        modifier = modifier,
+        modifier = modifier
+            .height(buttonSize.size),
         shape = derivedShape,
         colors = buttonColor,
         enabled = enabled,
@@ -125,25 +166,63 @@ internal fun EkaButtonImpl(
             isLeadingIconNull = leadingIcon == null,
             isTrailingIconNull = trailingIcon == null
         ),
-        elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = 0.dp,
-            pressedElevation = 0.dp,
-            hoveredElevation = 0.dp,
-            focusedElevation = 0.dp
-        ),
+        border = if (buttonStyle == EkaButtonStyle.OUTLINED) BorderStroke(
+            width = buttonSize.borderWidth(), color = EkaTheme.colors.outlineVariant
+        ) else null,
+        elevation = if (buttonStyle == EkaButtonStyle.ELEVATED) ButtonDefaults.elevatedButtonElevation(
+            defaultElevation = 2.dp,
+            pressedElevation = 4.dp,
+            hoveredElevation = 2.dp,
+            focusedElevation = 2.dp,
+            disabledElevation = 0.dp,
+        ) else null,
         content = {
-//            EkaButtonContent(
-//                label = label,
-//                buttonSize = buttonSize,
-//                leadingIcon = leadingIcon,
-//                trailingIcon = trailingIcon
-//            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                leadingIcon?.let {
+                    GetEkaIcon(
+                        icon = it,
+                        buttonSize = buttonSize
+                    )
+                    HorizontalSpacer(space = buttonSize.iconSpace())
+                }
+                Text(text = label, style = buttonSize.textStyle())
+                trailingIcon?.let {
+                    HorizontalSpacer(space = buttonSize.iconSpace())
+                    GetEkaIcon(
+                        icon = it,
+                        buttonSize = buttonSize
+                    )
+                }
+            }
         }
     )
 }
 
 @Composable
-internal fun getButtonShape(buttonShape: EkaButtonShape, buttonSize: EkaButtonSize): Shape {
+internal fun GetEkaIcon(icon: EkaIcon, buttonSize: EkaButtonSize) {
+    icon.painterResource?.let {
+        Icon(
+            painter = it,
+            contentDescription = icon.contentDescription,
+            modifier = Modifier
+                .size(buttonSize.iconSize())
+        )
+    }
+    icon.imageVector?.let {
+        Icon(
+            imageVector = it,
+            contentDescription = icon.contentDescription,
+            modifier = Modifier
+                .size(buttonSize.iconSize())
+        )
+    }
+}
+
+@Composable
+internal fun getEkaButtonShape(buttonShape: EkaButtonShape, buttonSize: EkaButtonSize): Shape {
     return when (buttonShape to buttonSize) {
         EkaButtonShape.ROUNDED to EkaButtonSize.XSMALL -> CircleShape
         EkaButtonShape.ROUNDED to EkaButtonSize.SMALL -> CircleShape
@@ -160,7 +239,7 @@ internal fun getButtonShape(buttonShape: EkaButtonShape, buttonSize: EkaButtonSi
 }
 
 @Composable
-internal fun getButtonColors(buttonStyle: EkaButtonStyle): ButtonColors {
+internal fun getEkaButtonColors(buttonStyle: EkaButtonStyle): ButtonColors {
     return when (buttonStyle) {
         EkaButtonStyle.FILLED -> {
             ButtonDefaults.buttonColors(
@@ -177,21 +256,21 @@ internal fun getButtonColors(buttonStyle: EkaButtonStyle): ButtonColors {
         }
 
         EkaButtonStyle.TEXT -> {
-            ButtonDefaults.outlinedButtonColors(
+            ButtonDefaults.buttonColors(
                 containerColor = Color.Transparent,
                 contentColor = EkaTheme.colors.primary
             )
         }
 
         EkaButtonStyle.TONAL -> {
-            ButtonDefaults.outlinedButtonColors(
+            ButtonDefaults.buttonColors(
                 containerColor = EkaTheme.colors.secondaryContainer,
                 contentColor = EkaTheme.colors.onSecondaryContainer
             )
         }
 
         EkaButtonStyle.ELEVATED -> {
-            ButtonDefaults.outlinedButtonColors(
+            ButtonDefaults.elevatedButtonColors(
                 containerColor = EkaTheme.colors.surfaceContainerLow,
                 contentColor = EkaTheme.colors.primary
             )

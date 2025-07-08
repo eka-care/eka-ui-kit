@@ -6,10 +6,19 @@ import androidx.compose.ui.graphics.vector.ImageVector
 @ConsistentCopyVisibility
 data class EkaIcon private constructor(
     val imageVector: ImageVector?,
-    val painterResource: Painter?
+    val painterResource: Painter?,
+    val contentDescription: String? = null
 ) {
-    constructor(icon: ImageVector) : this(imageVector = icon, painterResource = null)
+    constructor(icon: ImageVector, contentDescription: String = "") : this(
+        imageVector = icon,
+        painterResource = null,
+        contentDescription = contentDescription
+    )
 
-    constructor(icon: Painter) : this(imageVector = null, painterResource = icon)
+    constructor(icon: Painter, contentDescription: String = "") : this(
+        imageVector = null,
+        painterResource = icon,
+        contentDescription = contentDescription
+    )
 }
 
