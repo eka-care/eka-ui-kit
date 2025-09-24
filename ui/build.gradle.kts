@@ -10,7 +10,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        minSdk = 24
+        minSdk = 23
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -67,5 +67,5 @@ dependencies {
     api(libs.androidx.activity.compose)
     api(libs.accompanist.placeholder.material)
 
-    api(libs.androidx.material3)
+    api(libs.androidx.compose.material3)
 }
