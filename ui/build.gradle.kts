@@ -49,13 +49,16 @@ afterEvaluate {
             }
         }
     }
+    tasks.named("publishReleasePublicationToMavenLocal") {
+        dependsOn(tasks.named("bundleReleaseAar"))
+    }
 }
 
 dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
-    implementation(libs.material)
+    api(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -68,4 +71,5 @@ dependencies {
     api(libs.accompanist.placeholder.material)
 
     api(libs.androidx.compose.material3)
+    api(libs.androidx.compose.material.icons.extended)
 }
