@@ -67,6 +67,7 @@ dependencies {
     api(libs.androidx.compose.ui)
     api(libs.androidx.compose.ui.tooling)
     api(libs.androidx.compose.foundation)
+    implementation(libs.androidx.ui.text.google.fonts)
     api(libs.androidx.activity.compose)
     api(libs.accompanist.placeholder.material)
 
